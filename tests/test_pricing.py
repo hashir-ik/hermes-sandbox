@@ -33,6 +33,29 @@ def test_apply_discount_rejects_out_of_range():
         apply_discount(100.0, -1)
 
 
+def test_cart_total_quantity_multiplied():
+    items = [{"name": "mug", "price": 9.50, "quantity": 3}]
+    assert cart_total(items) == 28.50
+
+
+def test_cart_total_mixed_quantities():
+    items = [
+        {"name": "mug", "price": 9.50, "quantity": 2},
+        {"name": "notebook", "price": 4.25, "quantity": 4},
+    ]
+    assert cart_total(items) == 36.00
+
+
+def test_cart_total_zero_quantity():
+    items = [{"name": "mug", "price": 9.50, "quantity": 0}]
+    assert cart_total(items) == 0.0
+
+
 def test_checkout():
     items = [{"name": "mug", "price": 20.00, "quantity": 1}]
     assert checkout(items, 25) == 15.00
+
+
+def test_checkout_with_quantity():
+    items = [{"name": "mug", "price": 20.00, "quantity": 3}]
+    assert checkout(items, 25) == 45.00
