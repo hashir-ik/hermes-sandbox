@@ -3,9 +3,7 @@
 # Bulk order discount tiers: (minimum_quantity, discount_percent)
 # Evaluated highest-first; the first tier whose minimum is met wins.
 BULK_DISCOUNT_TIERS = [
-    (100, 20),
-    (50, 15),
-    (25, 10),
+    (50, 10),
     (10, 5),
 ]
 

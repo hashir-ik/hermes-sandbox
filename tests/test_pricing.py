@@ -74,19 +74,21 @@ def test_bulk_discount_5_at_10():
     assert bulk_discount_percent(items) == 5
 
 
-def test_bulk_discount_10_at_25():
-    items = [{"name": "mug", "price": 10.0, "quantity": 25}]
+def test_bulk_discount_5_between_10_and_49():
+    """Quantities 10-49 all get the 5% tier."""
+    items = [{"name": "mug", "price": 10.0, "quantity": 49}]
+    assert bulk_discount_percent(items) == 5
+
+
+def test_bulk_discount_10_at_50():
+    items = [{"name": "mug", "price": 10.0, "quantity": 50}]
     assert bulk_discount_percent(items) == 10
 
 
-def test_bulk_discount_15_at_50():
-    items = [{"name": "mug", "price": 10.0, "quantity": 50}]
-    assert bulk_discount_percent(items) == 15
-
-
-def test_bulk_discount_20_at_100():
-    items = [{"name": "mug", "price": 10.0, "quantity": 100}]
-    assert bulk_discount_percent(items) == 20
+def test_bulk_discount_10_above_50():
+    """No tier above 50 — stays at 10%."""
+    items = [{"name": "mug", "price": 10.0, "quantity": 200}]
+    assert bulk_discount_percent(items) == 10
 
 
 def test_bulk_discount_sums_across_items():
@@ -130,8 +132,8 @@ def test_checkout_manual_beats_bulk_when_higher():
 
 
 def test_checkout_bulk_beats_manual_when_higher():
-    # 100 items → 20% bulk, manual is 5% → 20% wins
-    items = [{"name": "mug", "price": 10.00, "quantity": 100}]
-    # total = 1000, 20% off = 800
-    assert checkout(items) == 800.00
-    assert checkout(items, 5) == 800.00
+    # 50 items → 10% bulk, manual is 5% → 10% wins
+    items = [{"name": "mug", "price": 10.00, "quantity": 50}]
+    # total = 500, 10% off = 450
+    assert checkout(items) == 450.00
+    assert checkout(items, 5) == 450.00
