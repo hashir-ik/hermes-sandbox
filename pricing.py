@@ -21,5 +21,15 @@ def apply_discount(price, percent):
 
 
 def checkout(items, discount_percent=0):
-    """Cart total with an optional discount applied."""
+    """Cart total with an optional discount applied.
+
+    ``discount_percent`` may be a number **or a string**.  Empty and
+    whitespace-only strings are treated as "no discount" (0 %).
+    """
+    if isinstance(discount_percent, str):
+        stripped = discount_percent.strip()
+        if stripped == "":
+            discount_percent = 0
+        else:
+            discount_percent = float(stripped)
     return apply_discount(cart_total(items), discount_percent)
