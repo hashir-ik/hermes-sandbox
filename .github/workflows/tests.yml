@@ -20,7 +20,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install
-        run: python -m pip install --upgrade pip pytest
+        run: |
+          python -m pip install --upgrade pip
+          # requirements.txt is the repo's own list; installing it rather
+          # than a hardcoded set means adding a dependency does not also
+          # mean remembering to edit CI.
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          else
+            python -m pip install pytest
+          fi
 
       # Deliberately the bare command with NO file arguments, which is
       # what the Verify stage is told to run. Naming files proves they

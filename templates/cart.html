@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart — hermes-sandbox</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+      margin: 0; padding: 2rem 1rem; display: flex; justify-content: center;
+    }
+    main { width: 100%; max-width: 40rem; }
+    h1 { font-size: 1.5rem; margin: 0 0 1.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: .6rem .5rem; border-bottom: 1px solid #8883; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .total { font-weight: 600; font-size: 1.15rem; }
+    .discounted { color: #0a7; }
+    .error { color: #c33; margin: .75rem 0; }
+    form { margin: 1.5rem 0; display: flex; gap: .5rem; flex-wrap: wrap; }
+    input { padding: .5rem; min-width: 8rem; flex: 1 1 8rem; }
+    button { padding: .5rem 1rem; cursor: pointer; }
+    /* The cart collapses to stacked rows on a narrow viewport. A spec that
+       only ever runs at desktop width will not see this. */
+    @media (max-width: 30rem) {
+      thead { display: none; }
+      tr { display: grid; grid-template-columns: 1fr auto; }
+      td.num { text-align: right; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Your cart</h1>
+
+  <table data-testid="cart">
+    <thead>
+      <tr><th>Item</th><th class="num">Price</th><th class="num">Qty</th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr data-testid="cart-row">
+        <td data-testid="item-name">{{ item.name }}</td>
+        <td class="num" data-testid="item-price">£{{ '%.2f'|format(item.price) }}</td>
+        <td class="num" data-testid="item-qty">{{ item.quantity }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form method="get" action="/">
+    <label for="discount" class="sr-only">Discount percent</label>
+    <input id="discount" name="discount" data-testid="discount-input"
+           placeholder="Discount %" value="{{ percent or '' }}"
+           inputmode="decimal" autocomplete="off">
+    <button type="submit" data-testid="apply-discount">Apply</button>
+  </form>
+
+  {% if error %}
+    <p class="error" role="alert" data-testid="error">{{ error }}</p>
+  {% endif %}
+
+  <p class="total" data-testid="total">
+    Total: <span data-testid="total-value">£{{ '%.2f'|format(total) }}</span>
+  </p>
+
+  {% if discounted != total %}
+    <p class="total discounted" data-testid="discounted-total">
+      After {{ percent }}% off:
+      <span data-testid="discounted-value">£{{ '%.2f'|format(discounted) }}</span>
+    </p>
+  {% endif %}
+</main>
+</body>
+</html>
