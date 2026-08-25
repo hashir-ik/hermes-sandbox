@@ -1,0 +1,31 @@
+name: tests
+
+# WS-11: tests run on the pull request, not only on whoever's laptop
+# happened to open it. A green run on the machine hosting the agents is
+# not a green run in CI, and until this existed the pipeline had no way
+# to make a failing test block anything.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: python -m pip install --upgrade pip pytest
+
+      # Deliberately the bare command with NO file arguments, which is
+      # what the Verify stage is told to run. Naming files proves they
+      # parse; it does not prove the suite collects them. A spec the
+      # suite never collects is a spec that will never fail, and CI stays
+      # green while the behaviour it guards rots.
+      - name: Run the suite
+        run: python -m pytest -q
