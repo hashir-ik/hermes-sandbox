@@ -5,3 +5,7 @@ __pycache__/
 node_modules/
 test-results/
 playwright-report/
+
+# The stand-in workbook (D-027). Pipeline state, not repo content: every
+# run mutates it, and a worktree that carries a copy would diverge.
+workbook/
