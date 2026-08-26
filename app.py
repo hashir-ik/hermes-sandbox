@@ -53,6 +53,7 @@ def cart():
         discounted=discounted,
         percent=percent,
         error=error,
+        raw_discount=raw,
     )
 
 

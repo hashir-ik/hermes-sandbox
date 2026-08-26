@@ -52,7 +52,7 @@
   <form method="get" action="/">
     <label for="discount" class="sr-only">Discount percent</label>
     <input id="discount" name="discount" data-testid="discount-input"
-           placeholder="Discount %" value="{{ percent or '' }}"
+           placeholder="Discount %" value="{{ raw_discount }}"
            inputmode="decimal" autocomplete="off">
     <button type="submit" data-testid="apply-discount">Apply</button>
   </form>
