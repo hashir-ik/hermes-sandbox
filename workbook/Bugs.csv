@@ -1,0 +1,4 @@
+Link ID,Title,Status,Owner,Evidence,Notes
+BUG-14,Cart page shows the wrong total,In Progress,QA,https://github.com/x/y/pull/5,found in pilot run
+BUG-15,Discount rounding is inconsistent,Ready,QA,,
+BUG-16,Discount field is cleared when the value is invalid,In Review,QA,,"Implement done -> test: Fixed the discount field clearing bug. The template used `{{ percent or '' }}` which evaluated to empty when parsing failed (percent stays 0.0, falsy). Now app. | Verify done -> review: Verified the discount field fix (BUG-16). Path (B): set up Playwright from scratch and wrote 6 E2E specs (12 test runs across desktop + mobile viewports), all p"

@@ -1,0 +1,72 @@
+name: e2e
+
+# WS-11: "a failing E2E test blocks the PR."
+#
+# The specs existed before this file and CI never ran them. That is the
+# worst of both worlds -- a suite everyone believes is guarding the
+# behaviour, and a pipeline that cannot go red when it breaks. Committing a
+# spec is the deliverable the Verify stage is gated on; running it is what
+# makes the deliverable mean something.
+#
+# Separate workflow from `tests` on purpose: pytest and Playwright fail for
+# unrelated reasons and take very different times to install, and a reader
+# looking at a red check should be able to tell which kind of test broke
+# from the check name alone.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # serve.py is the app under test; playwright.config.js starts it
+      # through `webServer`, so Python has to be here too.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+
+      # `npm ci` rather than `npm install`: the lockfile is committed, and
+      # a CI run that silently resolves a different Playwright version than
+      # the one the tester used is a green run that proves nothing.
+      - name: Install Node deps
+        run: npm ci
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium
+
+      # The bare command the Verify stage is told to run, for the same
+      # reason the pytest job uses a bare `pytest`: naming spec files
+      # proves they parse, not that the runner collects them.
+      - name: Run the E2E suite
+        run: npm test
+
+      # retain-on-failure in playwright.config.js means this directory is
+      # empty on a green run and carries the video, trace and screenshot on
+      # a red one. `if: failure()` because that is the only time there is
+      # anything in it worth keeping.
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-evidence
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
