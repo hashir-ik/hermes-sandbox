@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from flask import Flask, render_template, request
 
-from pricing import cart_total, checkout
+from pricing import cart_total, checkout, resolve_discount_code
 
 app = Flask(__name__)
 
@@ -29,15 +29,30 @@ ITEMS = [
 
 @app.route("/", methods=["GET"])
 def cart():
-    """The cart, with an optional ``?discount=`` applied."""
+    """The cart, with an optional ``?discount=`` or ``?discount_code=`` applied.
+
+    When both are supplied the code wins — see the task spec.
+    """
     raw = (request.args.get("discount") or "").strip()
+    raw_code = (request.args.get("discount_code") or "").strip()
     error = None
     percent = 0.0
-    if raw:
+    code_used = False
+
+    # --- discount code takes priority ---
+    if raw_code:
+        resolved = resolve_discount_code(raw_code)
+        if resolved is not None:
+            percent = resolved
+            code_used = True
+        else:
+            error = f"Unrecognised discount code: {raw_code!r}"
+    elif raw:
         try:
             percent = float(raw)
         except ValueError:
             error = f"{raw!r} is not a number."
+
     total = cart_total(ITEMS)
     discounted = total
     if error is None and percent:
@@ -54,6 +69,8 @@ def cart():
         percent=percent,
         error=error,
         raw_discount=raw,
+        raw_code=raw_code,
+        code_used=code_used,
     )
 
 
