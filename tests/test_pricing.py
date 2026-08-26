@@ -48,6 +48,25 @@ def test_checkout():
     assert checkout(items, 25) == 15.00
 
 
+def test_checkout_empty_string_discount():
+    """Empty string discount should return the plain total, no error."""
+    items = [{"name": "mug", "price": 20.00, "quantity": 1}]
+    assert checkout(items, "") == 20.00
+
+
+def test_checkout_whitespace_only_discount():
+    """Whitespace-only discount should behave the same as empty."""
+    items = [{"name": "mug", "price": 20.00, "quantity": 1}]
+    assert checkout(items, "   ") == 20.00
+    assert checkout(items, "\t\n") == 20.00
+
+
+def test_checkout_string_number_discount():
+    """A numeric string discount should work normally."""
+    items = [{"name": "mug", "price": 20.00, "quantity": 1}]
+    assert checkout(items, "25") == 15.00
+
+
 def test_checkout_with_quantity():
     items = [{"name": "mug", "price": 10.00, "quantity": 3}]
     # total = 30.00, 25% off = 22.50
