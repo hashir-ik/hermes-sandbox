@@ -53,7 +53,10 @@ def cart():
         discounted=discounted,
         percent=percent,
         error=error,
-        raw_discount=raw,
+        # DELIBERATE REGRESSION, do not merge. Reintroduces BUG-16:
+        # percent stays 0.0 when parsing fails, so this is falsy and
+        # the field is cleared out from under whoever typed in it.
+        raw_discount=percent or "",
     )
 
 
