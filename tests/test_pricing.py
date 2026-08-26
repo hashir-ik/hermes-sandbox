@@ -33,6 +33,16 @@ def test_apply_discount_rejects_out_of_range():
         apply_discount(100.0, -1)
 
 
+def test_cart_total_respects_quantity():
+    items = [
+        {"name": "Notebook", "price": 4.50, "quantity": 3},
+        {"name": "Pen", "price": 1.25, "quantity": 4},
+        {"name": "Desk lamp", "price": 22.00, "quantity": 1},
+    ]
+    # 4.50*3 + 1.25*4 + 22.00*1 = 13.50 + 5.00 + 22.00 = 40.50
+    assert cart_total(items) == 40.50
+
+
 def test_checkout():
     items = [{"name": "mug", "price": 20.00, "quantity": 1}]
     assert checkout(items, 25) == 15.00
@@ -55,3 +65,9 @@ def test_checkout_string_number_discount():
     """A numeric string discount should work normally."""
     items = [{"name": "mug", "price": 20.00, "quantity": 1}]
     assert checkout(items, "25") == 15.00
+
+
+def test_checkout_with_quantity():
+    items = [{"name": "mug", "price": 10.00, "quantity": 3}]
+    # total = 30.00, 25% off = 22.50
+    assert checkout(items, 25) == 22.50

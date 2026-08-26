@@ -1,0 +1,18 @@
+{
+  "name": "t_e091dec9",
+  "version": "1.0.0",
+  "description": "A deliberately small project used to test the Hermes Agent Dev Team pipeline\r end to end. Nothing here is real — it exists so agents have somewhere safe to\r create branches, write code, run tests and open pull requests.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
