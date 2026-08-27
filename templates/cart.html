@@ -75,6 +75,12 @@
       <span data-testid="discounted-value">£{{ '%.2f'|format(discounted) }}</span>
     </p>
   {% endif %}
+
+  <form method="post" action="/checkout" data-testid="checkout-form">
+    <input type="hidden" name="discount_code" value="{{ raw_code }}">
+    <input type="hidden" name="discount" value="{{ percent }}">
+    <button type="submit" data-testid="checkout-button">Checkout</button>
+  </form>
 </main>
 </body>
 </html>
