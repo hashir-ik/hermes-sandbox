@@ -1,5 +1,23 @@
 """Shopping cart pricing helpers."""
 
+#: Recognised discount codes and the percentage they grant.
+DISCOUNT_CODES = {
+    "SAVE10": 10,
+    "SAVE20": 20,
+}
+
+
+def resolve_discount_code(code):
+    """Return the discount percentage for *code*, or ``None`` if unrecognised.
+
+    Lookup is case-insensitive.  Empty / whitespace-only strings return
+    ``None`` (no error).
+    """
+    stripped = code.strip() if isinstance(code, str) else ""
+    if not stripped:
+        return None
+    return DISCOUNT_CODES.get(stripped.upper())
+
 
 def cart_total(items):
     """Total price of a cart.

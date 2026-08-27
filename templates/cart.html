@@ -50,6 +50,10 @@
   </table>
 
   <form method="get" action="/">
+    <label for="discount-code" class="sr-only">Discount code</label>
+    <input id="discount-code" name="discount_code" data-testid="discount-code-input"
+           placeholder="Discount code" value="{{ raw_code }}"
+           autocomplete="off">
     <label for="discount" class="sr-only">Discount percent</label>
     <input id="discount" name="discount" data-testid="discount-input"
            placeholder="Discount %" value="{{ raw_discount }}"
@@ -67,7 +71,7 @@
 
   {% if discounted != total %}
     <p class="total discounted" data-testid="discounted-total">
-      After {{ percent }}% off:
+      After {{ percent }}% off{% if code_used %} ({{ raw_code | upper }}){% endif %}:
       <span data-testid="discounted-value">£{{ '%.2f'|format(discounted) }}</span>
     </p>
   {% endif %}
