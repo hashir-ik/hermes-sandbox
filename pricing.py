@@ -6,6 +6,22 @@ DISCOUNT_CODES = {
     "SAVE20": 20,
 }
 
+#: In-memory order counter (no persistence required by the spec).
+_order_counter = 0
+
+
+def next_order_reference():
+    """Return the next order reference in the form ORD-00001."""
+    global _order_counter
+    _order_counter += 1
+    return f"ORD-{_order_counter:05d}"
+
+
+def reset_order_counter():
+    """Reset the order counter — for tests only."""
+    global _order_counter
+    _order_counter = 0
+
 
 def resolve_discount_code(code):
     """Return the discount percentage for *code*, or ``None`` if unrecognised.

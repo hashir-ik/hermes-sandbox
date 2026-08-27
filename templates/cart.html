@@ -21,6 +21,8 @@
     form { margin: 1.5rem 0; display: flex; gap: .5rem; flex-wrap: wrap; }
     input { padding: .5rem; min-width: 8rem; flex: 1 1 8rem; }
     button { padding: .5rem 1rem; cursor: pointer; }
+    .confirmation { border: 2px solid #0a7; border-radius: .5rem; padding: 1.5rem; margin-top: 1rem; }
+    .confirmation h1 { color: #0a7; }
     /* The cart collapses to stacked rows on a narrow viewport. A spec that
        only ever runs at desktop width will not see this. */
     @media (max-width: 30rem) {
@@ -32,6 +34,35 @@
 </head>
 <body>
 <main>
+{% if confirmation is defined and confirmation %}
+  <div class="confirmation" data-testid="confirmation-panel">
+    <h1 data-testid="confirmation-heading">Order confirmed</h1>
+    <p>Order reference: <strong data-testid="order-ref">{{ order_ref }}</strong></p>
+
+    <table data-testid="confirmation-items">
+      <thead>
+        <tr><th>Item</th><th class="num">Qty</th><th class="num">Line total</th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr data-testid="confirmation-row">
+          <td data-testid="conf-item-name">{{ item.name }}</td>
+          <td class="num" data-testid="conf-item-qty">{{ item.quantity }}</td>
+          <td class="num" data-testid="conf-item-line-total">£{{ '%.2f'|format(item.price * item.quantity) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="total" data-testid="amount-paid">
+      Amount paid: <span data-testid="paid-value">£{{ '%.2f'|format(paid) }}</span>
+    </p>
+  </div>
+
+{% elif empty_cart is defined and empty_cart %}
+  <p data-testid="empty-cart">Your cart is empty</p>
+
+{% else %}
   <h1>Your cart</h1>
 
   <table data-testid="cart">
@@ -75,6 +106,13 @@
       <span data-testid="discounted-value">£{{ '%.2f'|format(discounted) }}</span>
     </p>
   {% endif %}
+
+  <form method="post" action="/checkout" data-testid="checkout-form">
+    <input type="hidden" name="discount" value="{{ raw_discount }}">
+    <input type="hidden" name="discount_code" value="{{ raw_code }}">
+    <button type="submit" data-testid="checkout-button">Checkout</button>
+  </form>
+{% endif %}
 </main>
 </body>
 </html>
