@@ -97,7 +97,7 @@
   {% endif %}
 
   <p class="total" data-testid="total">
-    Total: <span data-testid="total-value">£{{ '%.2f'|format(total) }}</span>
+    Subtotal: <span data-testid="total-value">£{{ '%.2f'|format(total) }}</span>
   </p>
 
   {% if discounted != total %}
@@ -106,6 +106,14 @@
       <span data-testid="discounted-value">£{{ '%.2f'|format(discounted) }}</span>
     </p>
   {% endif %}
+
+  <p data-testid="tax">
+    Tax (20%): <span data-testid="tax-value">£{{ '%.2f'|format(tax) }}</span>
+  </p>
+
+  <p class="total" data-testid="grand-total">
+    Total: <span data-testid="grand-total-value">£{{ '%.2f'|format(grand_total) }}</span>
+  </p>
 
   <form method="post" action="/checkout" data-testid="checkout-form">
     <input type="hidden" name="discount" value="{{ raw_discount }}">
