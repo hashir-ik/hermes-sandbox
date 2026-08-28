@@ -47,6 +47,15 @@ def cart_total(items):
     return round(total, 2)
 
 
+#: Tax rate applied to the cart total after discounts.
+TAX_RATE = 0.20
+
+
+def calculate_tax(price):
+    """Return the tax amount for *price* at the standard rate (20 %)."""
+    return round(price * TAX_RATE, 2)
+
+
 def apply_discount(price, percent):
     """Return ``price`` after applying a percentage discount."""
     if percent < 0 or percent > 100:

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from flask import Flask, render_template, request
 
-from pricing import cart_total, checkout, next_order_reference, resolve_discount_code
+from pricing import calculate_tax, cart_total, checkout, next_order_reference, resolve_discount_code
 
 app = Flask(__name__)
 
@@ -61,6 +61,8 @@ def cart():
         except ValueError as exc:
             error = str(exc)
             discounted = total
+    tax = calculate_tax(discounted)
+    grand_total = round(discounted + tax, 2)
     return render_template(
         "cart.html",
         items=ITEMS,
@@ -71,6 +73,8 @@ def cart():
         raw_discount=raw,
         raw_code=raw_code,
         code_used=code_used,
+        tax=tax,
+        grand_total=grand_total,
     )
 
 
@@ -112,6 +116,8 @@ def do_checkout():
     else:
         paid = total
 
+    tax = calculate_tax(paid)
+    grand_total = round(paid + tax, 2)
     order_ref = next_order_reference()
 
     return render_template(
@@ -124,6 +130,8 @@ def do_checkout():
         percent=percent,
         code_used=code_used,
         raw_code=raw_code,
+        tax=tax,
+        grand_total=grand_total,
     )
 
 

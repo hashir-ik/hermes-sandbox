@@ -71,3 +71,28 @@ def test_checkout_with_quantity():
     items = [{"name": "mug", "price": 10.00, "quantity": 3}]
     # total = 30.00, 25% off = 22.50
     assert checkout(items, 25) == 22.50
+
+
+def test_calculate_tax():
+    """20 % tax on a round number."""
+    from pricing import calculate_tax
+    assert calculate_tax(100.0) == 20.0
+
+
+def test_calculate_tax_after_discount():
+    """Tax is computed on the discounted price."""
+    from pricing import calculate_tax
+    discounted = apply_discount(100.0, 10)  # 90.0
+    assert calculate_tax(discounted) == 18.0
+
+
+def test_calculate_tax_rounds():
+    """Tax should be rounded to 2 decimal places."""
+    from pricing import calculate_tax
+    # 33.33 * 0.20 = 6.666 → 6.67
+    assert calculate_tax(33.33) == 6.67
+
+
+def test_calculate_tax_zero():
+    from pricing import calculate_tax
+    assert calculate_tax(0.0) == 0.0
